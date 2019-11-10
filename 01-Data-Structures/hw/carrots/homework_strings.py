@@ -34,25 +34,75 @@ P.S. За незакрытый файловый дескриптор - кара�
 """
 
 # read the file dna.fasta
-dna = None
+with open('./files/dna.fasta', 'r') as file:
+    dna = {}
+    for line in file:
+        if line.startswith('>'):
+            dna_key = line.strip()
+            dna[dna_key] = []
+        else:
+            dna[dna_key].append(line.strip())
+
+with open('./files/rna_codon_table.txt') as file:
+    codon_table = file.read().split()
 
 
 def translate_from_dna_to_rna(dna):
     
-    """your code here"""
-    
+    transcription =  {'A': 'U',
+                      'C': 'G',
+                      'T': 'A',
+                      'G': 'C'}
+
+    rna = {}
+    for key in dna:
+        rna_key = key
+        rna[rna_key] = []
+        for line in dna[key]:
+            rna[rna_key].append(''.join(transcription[elem] for elem in line))
+            
     return rna
 
 
 def count_nucleotides(dna):
+    num_of_nucleotides = []
     
-    """your code here"""
-    
+    for key in dna:
+        num_of_nucleotides.append(key)
+        value = ''
+        for line in dna[key]:
+            value = value + line
+        num_of_nucleotides.append('A: {}'.format(value.count('A')))
+        num_of_nucleotides.append('C: {}'.format(value.count('C')))
+        num_of_nucleotides.append('G: {}'.format(value.count('G')))
+        num_of_nucleotides.append('T: {}'.format(value.count('T')))
+        
     return num_of_nucleotides
 
 
 def translate_rna_to_protein(rna):
     
-    """your code here"""
+    codon_transcription = dict(zip(codon_table[::2], codon_table[1::2]))
+    triplet_function = lambda x, n=3: [x[i:i+n] for i in range(0, len(x), n)]
+    
+    protein = {}
+    for key in rna:
+        protein_key = key
+        protein[key] = []
+        for line in rna[key]:
+            line = triplet_function(line)
+            for triplet in line:
+                if len(triplet) == 3:
+                    protein[key].append(codon_transcription[triplet])
+        protein[key] = ''.join(protein[key])
     
     return protein
+
+
+print('Cтатистика по количеству нуклеотидов в ДНК :\n')
+print(count_nucleotides(dna))
+print('\n\nПоследовательность РНК для каждого гена : \n')
+print(translate_from_dna_to_rna(dna))
+rna = translate_from_dna_to_rna(dna)
+print('\n\nПоследовательность кодонов для каждого гена: \n')
+print(translate_rna_to_protein(rna))
