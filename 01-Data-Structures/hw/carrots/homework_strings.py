@@ -4,7 +4,7 @@
 
 0) Повторение понятий из биологии (ДНК, РНК, нуклеотид, протеин, кодон)
 
-1) Построение статистики по входящим в последовательность ДНК нуклеотидам 
+1) Построение статистики по входящим в последовательность ДНК нуклеотидам
 для каждого гена (например: [A - 46, C - 66, G - 23, T - 34])
 
 2) Перевод последовательности ДНК в РНК (окей, Гугл)
@@ -12,8 +12,8 @@
 3) Перевод последовательности РНК в протеин*
 
 
-*В папке files вы найдете файл rna_codon_table.txt - 
-в нем содержится таблица переводов кодонов РНК в аминокислоту, 
+*В папке files вы найдете файл rna_codon_table.txt -
+в нем содержится таблица переводов кодонов РНК в аминокислоту,
 составляющую часть полипептидной цепи белка.
 
 
@@ -24,7 +24,7 @@
  - последовательность РНК для каждого гена
  - последовательность кодонов для каждого гена
 
- ** Если вы умеете в matplotlib/seaborn или еще что, 
+ ** Если вы умеете в matplotlib/seaborn или еще что,
  welcome за дополнительными баллами за
  гистограммы по нуклеотидной статистике.
  (Не забудьте подписать оси)
@@ -48,11 +48,10 @@ with open('./files/rna_codon_table.txt') as file:
 
 
 def translate_from_dna_to_rna(dna):
-    
-    transcription =  {'A': 'U',
-                      'C': 'G',
-                      'T': 'A',
-                      'G': 'C'}
+    transcription = {'A': 'U',
+                     'C': 'G',
+                     'T': 'A',
+                     'G': 'C'}
 
     rna = {}
     for key in dna:
@@ -60,13 +59,13 @@ def translate_from_dna_to_rna(dna):
         rna[rna_key] = []
         for line in dna[key]:
             rna[rna_key].append(''.join(transcription[elem] for elem in line))
-            
+
     return rna
 
 
 def count_nucleotides(dna):
     num_of_nucleotides = []
-    
+
     for key in dna:
         num_of_nucleotides.append(key)
         value = ''
@@ -76,15 +75,15 @@ def count_nucleotides(dna):
         num_of_nucleotides.append('C: {}'.format(value.count('C')))
         num_of_nucleotides.append('G: {}'.format(value.count('G')))
         num_of_nucleotides.append('T: {}'.format(value.count('T')))
-        
+
     return num_of_nucleotides
 
 
 def translate_rna_to_protein(rna):
-    
+
     codon_transcription = dict(zip(codon_table[::2], codon_table[1::2]))
     triplet_function = lambda x, n=3: [x[i:i+n] for i in range(0, len(x), n)]
-    
+
     protein = {}
     for key in rna:
         protein_key = key
@@ -94,8 +93,10 @@ def translate_rna_to_protein(rna):
             for triplet in line:
                 if len(triplet) == 3:
                     protein[key].append(codon_transcription[triplet])
+                else:
+                    None
         protein[key] = ''.join(protein[key])
-    
+
     return protein
 
 
