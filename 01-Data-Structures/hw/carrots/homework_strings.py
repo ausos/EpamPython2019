@@ -99,11 +99,14 @@ def translate_rna_to_protein(rna):
 
     return protein
 
-
-print('Cтатистика по количеству нуклеотидов в ДНК :\n')
-print(count_nucleotides(dna))
-print('\n\nПоследовательность РНК для каждого гена : \n')
-print(translate_from_dna_to_rna(dna))
 rna = translate_from_dna_to_rna(dna)
-print('\n\nПоследовательность кодонов для каждого гена: \n')
-print(translate_rna_to_protein(rna))
+protein = translate_rna_to_protein(rna)
+
+with open('./nucleotides.txt', 'w') as f:
+    f.write(str(count_nucleotides(dna)))
+
+with open('./rna.txt', 'w') as f:
+    f.write(str(rna))
+
+with open('./protein.txt', 'w') as f:
+    f.write(str(protein))
