@@ -16,31 +16,29 @@ class Homework():
 
 class Student():
     """Created when new student registers"""
+    __slots__ = ['last_name', 'first_name']
 
     def __init__(self, last_name, first_name):
         self.last_name = last_name
         self.first_name = first_name
 
     def do_homework(self, homework):
-        if homework.is_active() is True:
+        if homework.is_active():
             return homework
-        else:
-            print('You are late')
-            return
+        print('You are late')
 
 
 class Teacher():
     """Created when new teacher registers"""
+    __slots__ = ['last_name', 'first_name']
 
     def __init__(self, last_name, first_name):
         self.last_name = last_name
         self.first_name = first_name
 
-    def create_homework(self, text, days):
-        self.text = text
-        self.days = days
-        homework = Homework(self.text, self.days)
-        return homework
+    @staticmethod
+    def create_homework(text, days):
+        return Homework(text, days)
 
 
 if __name__ == '__main__':
