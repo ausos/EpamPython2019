@@ -11,7 +11,29 @@ reset_instances_counter - сбросить счетчик экземпляров
 
 
 def instances_counter(cls):
-    """Some code"""
+    cls_counter = 0
+    class_init = cls.__init__
+
+    def __init__(self, *args, **kwargs):
+        class_init(self, *args, **kwargs)
+        nonlocal cls_counter
+        cls_counter += 1
+
+    @classmethod
+    def get_created_instances(cls):
+        nonlocal cls_counter 
+        return cls_counter
+
+    @classmethod
+    def reset_instances_counter(cls):
+        nonlocal cls_counter 
+        previous_value = cls_counter
+        cls_counter = 0
+        return previous_value
+
+    cls.__init__ = __init__
+    cls.get_created_instances = get_created_instances
+    cls.reset_instances_counter = reset_instances_counter
     return cls
 
 

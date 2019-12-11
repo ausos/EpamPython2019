@@ -53,6 +53,66 @@ import datetime
 from collections import defaultdict
 
 
+class Person:
+    """Created new person"""
+    __slots__ = ['last_name', 'first_name']
+
+    def __init__(self, last_name, first_name):
+        self.last_name = last_name
+        self.first_name = first_name
+
+class Student(Person):
+    """Created when new student registers"""
+
+    def do_homework(self, homework, solution):
+        if homework.is_active():
+            return HomeworkResult(self, homework, solution)
+        raise DeadlineError('You are late')
+
+class Homework:
+    """Created when adding new homework"""
+    __slots__ = ['text', 'deadline', 'created']
+
+    def __init__(self, text, days):
+        self.text = text
+        self.created = datetime.datetime.now()
+        self.deadline = datetime.timedelta(days)
+
+    def is_active(self):
+        return datetime.datetime.now() - self.created <= self.deadline
+
+class HomeworkResult:
+
+    __slots__ = ['author', 'homework', 'solution', 'created']
+
+    def __init__(self, author, homework, solution):
+        if not isinstance(homework, Homework):
+            raise ValueError('You gave a not Homework object') 
+        self.author = author
+        self.homework = homework
+        self.solution = solution
+        self.created = datetime.datetime.now()
+
+class Teacher(Person):
+    """Created when new teacher registers"""
+    homework_done = defaultdict(set)
+
+    @staticmethod
+    def create_homework(text, days):
+        return Homework(text, days)
+
+    def check_homework(self, hw_result):
+        if len(hw_result.solution) > 5:
+            self.homework_done[hw_result.homework].add(hw_result)
+        return len(hw_result.solution) > 5
+
+    @classmethod
+    def reset_results(cls, homework=None):
+        if homework:
+            cls.homework_done[homework].clear()
+        else:
+            cls.homework_done.clear()
+
 if __name__ == '__main__':
     opp_teacher = Teacher('Daniil', 'Shadrin')
     advanced_python_teacher = Teacher('Aleksandr', 'Smetanin')
