@@ -52,6 +52,8 @@ PEP8 соблюдать строго, проверку делаю автотес
 import datetime
 from collections import defaultdict
 
+class DeadlineError(Exception):
+    """The deadline has already expired"""
 
 class Person:
     """Created new person"""
@@ -87,7 +89,7 @@ class HomeworkResult:
 
     def __init__(self, author, homework, solution):
         if not isinstance(homework, Homework):
-            raise ValueError('You gave a not Homework object') 
+            raise TypeError('You gave a not Homework object') 
         self.author = author
         self.homework = homework
         self.solution = solution
@@ -104,7 +106,8 @@ class Teacher(Person):
     def check_homework(self, hw_result):
         if len(hw_result.solution) > 5:
             self.homework_done[hw_result.homework].add(hw_result)
-        return len(hw_result.solution) > 5
+            return True
+        return False
 
     @classmethod
     def reset_results(cls, homework=None):
