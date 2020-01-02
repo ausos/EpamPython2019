@@ -49,3 +49,69 @@ Dear John, there is new playlist on 'All about dogs' channel: 'Dogs nutrition'
 Dear Erica, there is new playlist on 'All about dogs' channel: 'Dogs nutrition'
 
 """
+from abc import ABC, abstractmethod
+
+
+class Observer(ABC):
+
+    @abstractmethod
+    def update(self, message: str) -> None:
+        pass
+
+
+class Observable(ABC):
+
+    def __init__(self) -> None:
+        self.observers = list()
+
+    def subscribe(self, observer: Observer) -> None:
+        self.observers.append(observer)
+
+    def unsubscribe(self, observer: Observer) -> None:
+        if observer in self.observers:
+            self.observers.remove(observer)
+
+    def notify_observers(self, message: str) -> None:
+        for observer in self.observers:
+            observer.update(message)
+
+
+class MyTubeUser(Observer):
+    def __init__(self, user_name: str):
+        self.user_name = user_name
+
+    def update(self, message: str):
+        print(f"Dear {self.user_name}, {message}")
+
+
+class MyTubeChannel(Observable):
+    def __init__(self, channel_name: str, chanel_owner: MyTubeUser):
+        super().__init__()
+        self.channel_name = channel_name
+        self.chanel_owner = chanel_owner
+        self.playlist = dict()
+
+    def subscribe(self, user: Observer):
+        self.observers.append(user)
+
+    def publish_video(self, video: str):
+        super().notify_observers(f"there is new video on '{self.channel_name}'"\
+                                 f"channel: '{video}'")
+
+    def publish_playlist(self, playlist: dict):
+        self.playlist = playlist
+        self.notify_observers(f"there is new playlist on '{self.channel_name}'"\
+                              f"'{playlist}'")
+
+if __name__ == '__main__':
+    matt = MyTubeUser('Matt')
+    john = MyTubeUser('John')
+    erica = MyTubeUser('Erica')
+    dogs_life = MyTubeChannel('All about dogs', matt)
+    dogs_life.subscribe(john)
+    dogs_life.subscribe(erica)
+    dogs_nutrition_videos = ['What do dogs eat?', 'Which Pedigree pack to choose?']
+    dogs_nutrition_playlist = {'Dogs nutrition': dogs_nutrition_videos}
+    for video in dogs_nutrition_videos:
+        dogs_life.publish_video(video)
+    dogs_life.publish_playlist(dogs_nutrition_playlist)
