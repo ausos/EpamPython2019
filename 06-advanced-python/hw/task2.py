@@ -47,7 +47,6 @@ class Quaternion:
         else:
             raise TypeError('Not supported type given')
 
-    @staticmethod
     def inversed(self):
         sq_sum = self.a**2 + self.b**2 + self.c**2 + self.d**2
         return Quaternion(self.a / sq_sum,
@@ -55,9 +54,9 @@ class Quaternion:
                           self.c / sq_sum,
                           self.d / sq_sum)
 
-    def __div__(self, other):
+    def __truediv__(self, other):
         if isinstance(other, Quaternion):
-            return self * other.inverse()
+            return self * other.inversed()
         elif isinstance(other, (int, float)):
             return self / Quaternion(other)
         else:
@@ -65,7 +64,8 @@ class Quaternion:
 
     def __eq__(self, other):
         if isinstance(other, Quaternion):
-            return self.__abs__() == other.__abs__()
+            return (self.a, self.b, self.c, self.d) == \
+                   (other.a, other.b, other.c, other.d)
         elif isinstance(other, (int, float)):
             return self.__eq__(Quaternion(other))
         else:
@@ -76,3 +76,6 @@ class Quaternion:
 
     def __str__(self):
         return f'{self.a} {self.b}i {self.c}j {self.d}k'
+
+    def __repr__(self):
+        return f'Quaternion({self.a}, {self.b}, {self.c}, {self.d})'
